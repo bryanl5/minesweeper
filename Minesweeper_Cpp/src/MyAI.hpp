@@ -40,8 +40,22 @@ public:
     // ======================================================================
     // YOUR CODE BEGINS
     // ======================================================================
+private:     
+
+	void uncoverAllPossible();
 
 
+
+	struct Tile{
+  								// the tile has Bomb or not (deleted since we dont know where mines are)
+        bool uncovered  = false; // the tile uncovered or not
+        bool flag       = false; // the tile has been flag or not
+        int  number     = -1;     // records number of bombs around
+    };
+
+    vector<vector<Tile> gameBoard;
+
+    queue<pair<int,int>> myQueue;
 
     // ======================================================================
     // YOUR CODE ENDS
