@@ -50,18 +50,69 @@ Agent::Action MyAI::getAction( int number )
     // YOUR CODE BEGINS
     // ======================================================================
     gameBoard[agentX][agentY].number = number;
+    gameBoard[agentX][agentY].uncovered = true;
 
     //Wei's code here
+    pair<int,int> myPair;
+   
+    
+    if (number==0)
+    {
+        if( agentX - 1 >= 0 && agentY -1 >=0)
+        {
+            myPair = make_pair(agentX-1,agentY-1); //1
+            insertFutureMoves(myPair);
+        }   
+        if( agentX - 1 >= 0 && agentY + 1< rowDimension)
+        {
+            myPair = make_pair(agentX-1,agentY+1); //7
+            insertFutureMoves(myPair);
+        }      
+        if( agentX + 1 < colDimension && agentY - 1 >= 0)
+        {
+            myPair = make_pair(agentX+1,agentY-1); //3
+            insertFutureMoves(myPair);
+        }   
+        if( agentX + 1 < colDimension && agentY + 1< rowDimension)
+        {
+            myPair = make_pair(agentX+1,agentY+1); //9
+            insertFutureMoves(myPair);
+        }   
+        if(agentY - 1 >= 0)
+        {
+            myPair = make_pair(agentX ,agentY-1); //2
+            insertFutureMoves(myPair);
+        } 
+        if(agentY + 1 < rowDimension)
+        {
+            myPair = make_pair(agentX ,agentY+1); //8
+            insertFutureMoves(myPair);
+        } 
+        if(agentX - 1 >= 0)
+        {
+            myPair = make_pair(agentX +1 ,agentY); //4
+            insertFutureMoves(myPair);
+        } 
+        if(agentX + 1 < colDimension)
+        {
+            myPair = make_pair(agentX + 1,agentY); //6
+            insertFutureMoves(myPair);
+        } 
+    }
 
     //
-    if(!myQueue.empty())
+
+
+
+
+    if(!futureMoves.empty())
     {
         pair<int,int> myPair = myQueue.pop();
 
         agentX = myPair.first;
         agentY = myPair.second;
 
-        return action(Action_type(UNCOVER), myPair.first, myPair.second);
+        return action(Action_type(UNCOVER), agentX, agentY);
     }
 
 
@@ -79,7 +130,17 @@ Agent::Action MyAI::getAction( int number )
 // ======================================================================
 
 
+void MyAI::insertFutureMoves(pair myPair)
+//This function takes a pair and a queue ,
+//returns a new queue if the pair doesn't exist in the set(local)
+{
+    if(previousMoves.count(myPair) != 1)
+    {
+        previousMoves.insert(myPair)
+        futureMoves.push(myPair);
+    }
 
+}
 
 
 // ======================================================================

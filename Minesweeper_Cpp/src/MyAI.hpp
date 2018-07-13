@@ -55,7 +55,9 @@ private:
 
     vector<vector<Tile> gameBoard;
 
-    queue<pair<int,int>> myQueue;
+    queue<pair<int,int>> futureMoves;
+
+    set<pair<int,int>> previousMoves;
 
     // ======================================================================
     // YOUR CODE ENDS
