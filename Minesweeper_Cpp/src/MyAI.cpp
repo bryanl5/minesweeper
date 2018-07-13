@@ -20,7 +20,8 @@
 #include "MyAI.hpp"
 #include <vector>
 #include <queue>
-#include <pair>
+#include <set>
+#include <utility>
 
 
 
@@ -36,7 +37,7 @@ MyAI::MyAI ( int _rowDimension, int _colDimension, int _totalMines, int _agentX,
     agentY = _agentY;
 
 
-    gameBoard = vector<vector<Tile>> v(rowDimension, vector<Tile>(colDimension,Tile()));
+    gameBoard = vector<vector<Tile>> (rowDimension, vector<Tile>(colDimension,Tile()));
 
 
     // ======================================================================
@@ -107,12 +108,16 @@ Agent::Action MyAI::getAction( int number )
 
     if(!futureMoves.empty())
     {
-        pair<int,int> myPair = myQueue.pop();
+        pair<int,int> myPair = futureMoves.front();
+
+        futureMoves.pop();
 
         agentX = myPair.first;
         agentY = myPair.second;
 
-        return action(Action_type(UNCOVER), agentX, agentY);
+
+
+        return {actions[1], agentX, agentY};
     }
 
 
@@ -130,13 +135,13 @@ Agent::Action MyAI::getAction( int number )
 // ======================================================================
 
 
-void MyAI::insertFutureMoves(pair myPair)
+void MyAI::insertFutureMoves(pair<int,int> myPair)
 //This function takes a pair and a queue ,
 //returns a new queue if the pair doesn't exist in the set(local)
 {
     if(previousMoves.count(myPair) != 1)
     {
-        previousMoves.insert(myPair)
+        previousMoves.insert(myPair);
         futureMoves.push(myPair);
     }
 

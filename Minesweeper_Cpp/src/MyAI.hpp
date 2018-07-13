@@ -27,7 +27,7 @@
 #include <set>
 #include <algorithm>
 #include <queue>
-#include <pair>
+#include <utility>
 
 using namespace std;
 
@@ -42,24 +42,35 @@ public:
     // ======================================================================
     // YOUR CODE BEGINS
     // ======================================================================
-private:     
+private:   
 
-	void uncoverAllPossible();
-
-
-
-	struct Tile{
+	struct Tile
+	{
   								// the tile has Bomb or not (deleted since we dont know where mines are)
         bool uncovered  = false; // the tile uncovered or not
         bool flag       = false; // the tile has been flag or not
         int  number     = -1;     // records number of bombs around
     };
 
+    const Action_type actions[4] =
+    {
+    	LEAVE,
+    	UNCOVER, 
+    	FLAG,
+    	UNFLAG,
+    };
+
     vector<vector<Tile>> gameBoard;
 
     queue<pair<int,int>> futureMoves;
 
-    set<pair<int,int>> previousMoves;
+    set<pair<int,int>> previousMoves;  
+
+	void uncoverAllPossible();
+
+	void insertFutureMoves(pair<int,int> myPair);
+
+
 
     // ======================================================================
     // YOUR CODE ENDS
