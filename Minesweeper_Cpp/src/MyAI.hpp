@@ -26,6 +26,8 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <queue>
+#include <pair>
 
 using namespace std;
 
@@ -53,7 +55,7 @@ private:
         int  number     = -1;     // records number of bombs around
     };
 
-    vector<vector<Tile> gameBoard;
+    vector<vector<Tile>> gameBoard;
 
     queue<pair<int,int>> futureMoves;
 
