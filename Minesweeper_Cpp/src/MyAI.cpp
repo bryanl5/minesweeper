@@ -60,46 +60,12 @@ Agent::Action MyAI::getAction( int number )
     //if the tile number is 0 add its neighbors to futureMoves as long as they are inbounds
     if (number==0)
     {
-        if( agentX - 1 >= 0 && agentY -1 >=0)
+        vector<pair<int,int>> temp = getNeighborsCoordinates(agentX, agentY);
+
+        for(int i = 0; i < temp.size(); i ++)
         {
-            myPair = make_pair(agentX-1,agentY-1); //1
-            insertFutureMoves(myPair);
-        }   
-        if( agentX - 1 >= 0 && agentY + 1< rowDimension)
-        {
-            myPair = make_pair(agentX-1,agentY+1); //7
-            insertFutureMoves(myPair);
-        }      
-        if( agentX + 1 < colDimension && agentY - 1 >= 0)
-        {
-            myPair = make_pair(agentX+1,agentY-1); //3
-            insertFutureMoves(myPair);
-        }   
-        if( agentX + 1 < colDimension && agentY + 1< rowDimension)
-        {
-            myPair = make_pair(agentX+1,agentY+1); //9
-            insertFutureMoves(myPair);
-        }   
-        if(agentY - 1 >= 0)
-        {
-            myPair = make_pair(agentX ,agentY-1); //2
-            insertFutureMoves(myPair);
-        } 
-        if(agentY + 1 < rowDimension)
-        {
-            myPair = make_pair(agentX ,agentY+1); //8
-            insertFutureMoves(myPair);
-        } 
-        if(agentX - 1 >= 0)
-        {
-            myPair = make_pair(agentX -1 ,agentY); //4
-            insertFutureMoves(myPair);
-        } 
-        if(agentX + 1 < colDimension)
-        {
-            myPair = make_pair(agentX + 1,agentY); //6
-            insertFutureMoves(myPair);
-        } 
+            insertFutureMoves(temp[i]);
+        }
     }
 
 
