@@ -48,7 +48,7 @@ private:
 	{
   								// the tile has Bomb or not (deleted since we dont know where mines are)
         bool uncovered  = false; // the tile uncovered or not
-        bool flag       = false; // the tile has been flag or not
+        bool flag       = false; // the tile has been flagged as mine or not
         int  number     = -1;     // records number of bombs around
     };
 
@@ -66,11 +66,13 @@ private:
 
     set<pair<int,int>> previousMoves;  
 
-	void uncoverAllPossible();
+    vector<pair<int,int>> mineLocations;
+
+	void uncoverAllPossible(int x, int y);
 
 	void insertFutureMoves(pair<int,int> myPair);
 
-
+    vector<pair<int,int>> getNeighborsCoordinates(int x, int y);
 
     // ======================================================================
     // YOUR CODE ENDS
