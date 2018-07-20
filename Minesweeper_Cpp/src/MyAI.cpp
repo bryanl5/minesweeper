@@ -186,33 +186,6 @@ Agent::Action MyAI::getAction( int number )
     }
     //
 
-    //temp minAI feature, if mine, then uncover all covered tiles around mine
-    for(int i = 0; i < colDimension; i++)
-    {
-        for(int j = 0; j < rowDimension; j++)
-        {
-            if(gameBoard[i][j].flag == false && gameBoard[i][j].uncovered == false)
-            {
-                myPair = make_pair(i, j);
-                insertFutureMoves(myPair, 1);
-            }
-        }
-    }
-    if(!futureMoves.empty())
-    {
-        Action myAction = futureMoves.front();
-
-        futureMoves.pop();
-
-        agentX = myAction.location.first;
-        agentY = myAction.location.second;
-
-
-
-        return {actions[myAction.actionNumber], agentX, agentY};
-    }
-    //
-
     //scan for x-number tiles and check to see if x neighbors are flagged as a mine, if so, put all covered and unflagged neighbors into future moves
     for(int i = 0; i < colDimension; i++)
     {
