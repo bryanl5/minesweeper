@@ -54,7 +54,6 @@ Agent::Action MyAI::getAction( int number )
     gameBoard[agentX][agentY].number = number;
     gameBoard[agentX][agentY].uncovered = true;
 
-    //Wei's code here
     pair<int,int> myPair;
    
     //if the tile number is 0 add its neighbors to futureMoves as long as they are inbounds
@@ -64,25 +63,23 @@ Agent::Action MyAI::getAction( int number )
 
         for(int i = 0; i < temp.size(); i ++)
         {
-            insertFutureMoves(temp[i]);
+            insertFutureMoves(temp[i], 1);
         }
     }
-
-
 
     //as long as futureMoves is not empty, pop the coordinates from queue and uncover that location
     if(!futureMoves.empty())
     {
-        pair<int,int> myPair = futureMoves.front();
+        Action myAction = futureMoves.front();
 
         futureMoves.pop();
 
-        agentX = myPair.first;
-        agentY = myPair.second;
+        agentX = myAction.location.first;
+        agentY = myAction.location.second;
 
 
 
-        return {actions[1], agentX, agentY};
+        return {actions[myAction.actionNumber], agentX, agentY};
     }
 
     //check for "1" tiles with one covered neighbor and flag as mine as well as insert mine location into mineLocations list
@@ -197,26 +194,26 @@ Agent::Action MyAI::getAction( int number )
             if(gameBoard[i][j].flag == false && gameBoard[i][j].uncovered == false)
             {
                 myPair = make_pair(i, j);
-                insertFutureMoves(myPair);
+                insertFutureMoves(myPair, 1);
             }
         }
     }
     if(!futureMoves.empty())
     {
-        pair<int,int> myPair = futureMoves.front();
+        Action myAction = futureMoves.front();
 
         futureMoves.pop();
 
-        agentX = myPair.first;
-        agentY = myPair.second;
+        agentX = myAction.location.first;
+        agentY = myAction.location.second;
 
 
 
-        return {actions[1], agentX, agentY};
+        return {actions[myAction.actionNumber], agentX, agentY};
     }
     //
 
-    //scan for x-number tiles and check to see if x neighbors are flagged as a mine, if so, uncover all possible other tiles
+    //scan for x-number tiles and check to see if x neighbors are flagged as a mine, if so, put all covered and unflagged neighbors into future moves
     for(int i = 0; i < colDimension; i++)
     {
         for(int j = 0; j < rowDimension; j++)
@@ -224,6 +221,21 @@ Agent::Action MyAI::getAction( int number )
             if(gameBoard[i][j].uncovered == true && gameBoard[i][j].number > 0)
                 uncoverAllPossible(i, j);
         }
+    }
+
+    //if future moves is not empty, pop from it, change agent x and agent y, then return uncover action 
+    if(!futureMoves.empty())
+    {
+        Action myAction = futureMoves.front();
+
+        futureMoves.pop();
+
+        agentX = myAction.location.first;
+        agentY = myAction.location.second;
+
+
+
+        return {actions[myAction.actionNumber], agentX, agentY};
     }
     //
 
@@ -242,12 +254,19 @@ Agent::Action MyAI::getAction( int number )
 
 //This function takes a pair and a queue ,
 //returns a new queue if the pair doesn't exist in the set(local)
-void MyAI::insertFutureMoves(pair<int,int> myPair)
+void MyAI::insertFutureMoves(pair<int,int> myPair, int actionNum)
 {
     if(previousMoves.count(myPair) != 1)
     {
         previousMoves.insert(myPair);
-        futureMoves.push(myPair);
+
+        //create struct action push action instead of myPair
+        Action action;
+
+        action.location = myPair;
+        action.actionNumber = actionNum;
+
+        futureMoves.push(action);
     }
 
 }
@@ -255,12 +274,31 @@ void MyAI::insertFutureMoves(pair<int,int> myPair)
 //this function checks to see if the number of flagged neighbors = the tiles number, if so add all covered neighbors to future moves
 void MyAI::uncoverAllPossible(int x, int y)
 {
+    vector<pair<int,int>> temp = getNeighborsCoordinates(x,y);
+    int flaggedCount = 0;
 
+    for(int i = 0 ; i < temp.size(); i ++)
+    {
+        if(gameBoard[temp[i].first][temp[i].second].flag == true)
+            flaggedCount ++;
+    }
+
+    if(flaggedCount == gameBoard[x][y].number)
+    {
+        for(int i = 0; i < temp.size(); i ++)
+        {
+            if(gameBoard[temp[i].first][temp[i].second].flag == false && gameBoard[temp[i].first][temp[i].second].uncovered == false)
+                insertFutureMoves(temp[i], 1);
+        }
+    }
 }
 
+//this funciton returns a vector of pairs of coordinates of all in bounds neighbors of the given x,y
 vector<pair<int,int>> MyAI::getNeighborsCoordinates(int x, int y)
 {
     vector<pair<int,int>> neighborCoordinates;
+
+    pair<int,int> myPair;
 
     if( x - 1 >= 0 && y -1 >=0)
     {

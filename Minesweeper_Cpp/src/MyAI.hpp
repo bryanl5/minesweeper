@@ -52,6 +52,12 @@ private:
         int  number     = -1;     // records number of bombs around
     };
 
+    struct Action
+    {
+        pair<int,int> location;
+        int actionNumber = -1;
+    };
+
     const Action_type actions[4] =
     {
     	LEAVE,
@@ -62,7 +68,7 @@ private:
 
     vector<vector<Tile>> gameBoard;
 
-    queue<pair<int,int>> futureMoves;
+    queue<Action> futureMoves;
 
     set<pair<int,int>> previousMoves;  
 
@@ -70,7 +76,7 @@ private:
 
 	void uncoverAllPossible(int x, int y);
 
-	void insertFutureMoves(pair<int,int> myPair);
+	void insertFutureMoves(pair<int,int> myPair, int actionNum);
 
     vector<pair<int,int>> getNeighborsCoordinates(int x, int y);
 
