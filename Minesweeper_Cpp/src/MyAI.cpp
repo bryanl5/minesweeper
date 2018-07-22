@@ -37,6 +37,7 @@ MyAI::MyAI ( int _rowDimension, int _colDimension, int _totalMines, int _agentX,
     agentX = _agentX;
     agentY = _agentY;
 
+    firstMove = true;
 
     gameBoard = vector<vector<Tile>> (rowDimension, vector<Tile>(colDimension,Tile()));
 
@@ -51,9 +52,21 @@ Agent::Action MyAI::getAction( int number )
     // ======================================================================
     // YOUR CODE BEGINS
     // ======================================================================
-    gameBoard[agentX][agentY].number = number;
-    gameBoard[agentX][agentY].uncovered = true;
 
+
+    //temporary debug function DELETE BEFORE SUBMITION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    printMyWorldInfo(); 
+
+
+    gameBoard[agentX][agentY].number = number;
+
+    if(firstMove == true)
+    {
+        gameBoard[agentX][agentY].uncovered = true;
+
+        firstMove = false;
+    }
+    
     pair<int,int> myPair;
    
     //if the tile number is 0 add its neighbors to futureMoves as long as they are inbounds
@@ -225,8 +238,8 @@ Agent::Action MyAI::getAction( int number )
 // YOUR CODE BEGINS
 // ======================================================================
 
-//This function takes a pair and a queue ,
-//returns a new queue if the pair doesn't exist in the set(local)
+//This function takes a pair and int ,
+//adds an action to futureMoves if the pair of coordinates doesn't already exist in previousMoves
 void MyAI::insertFutureMoves(pair<int,int> myPair, int actionNum)
 {
     if(previousMoves.count(myPair) != 1)
@@ -244,7 +257,8 @@ void MyAI::insertFutureMoves(pair<int,int> myPair, int actionNum)
 
 }
 
-//this function checks to see if the number of flagged neighbors = the tiles number, if so add all covered neighbors to future moves
+//this function checks to see if the number of flagged neighbors = the tiles number, 
+//if so add all covered neighbors to future moves
 void MyAI::uncoverAllPossible(int x, int y)
 {
     vector<pair<int,int>> temp = getNeighborsCoordinates(x,y);
@@ -315,6 +329,70 @@ vector<pair<int,int>> MyAI::getNeighborsCoordinates(int x, int y)
     } 
 
     return neighborCoordinates;
+}
+
+//debug functions
+void MyAI::printMyWorldInfo(     )
+{
+    printMyBoardInfo();
+    printMyActionInfo();
+}
+void MyAI::printMyBoardInfo(     )
+{
+    cout << "=================== Game Board ------------------\n" << endl;
+    for ( int r = rowDimension-1; r >= 0; --r )
+    {
+        printf("%-4d%c",r+1,'|');
+        for ( int c = 0; c < colDimension; ++c )
+            printMyTileInfo ( c, r );
+        cout << endl << endl;
+    }
+
+    cout << "     ";
+    for (int c = 0; c < colDimension; ++c)
+        cout << setw(8) << "-" ;
+    cout << endl << "     ";
+    for (int c = 0; c < colDimension; ++c)
+        cout << setw(8) << c + 1;
+    cout << endl;
+}
+void MyAI::printMyTileInfo( int c, int r )
+{
+
+    string tileString;
+
+    if ( gameBoard[c][r].uncovered )
+        tileString.append(to_string(gameBoard[c][r].number));
+    else if ( gameBoard[c][r].flag )
+        tileString.append("#");
+    else
+        tileString.append(".");
+
+    cout << setw(8) << tileString;
+}
+void MyAI::printMyActionInfo()
+{
+    switch ( futureMoves.front().actionNumber )
+    {
+        case 1:
+            cout << "Next Action: Uncover";
+            break;
+        case 2:
+            cout << "Next Action: Flag";
+            break;
+        case 3:
+            cout << "Next Action: Unflag";
+            break;
+        case 0:
+            cout << "Next Action: Leave" << endl;
+            break;
+
+        default:
+            cout << "Last Action: Invalid" << endl;
+    }
+
+    if (futureMoves.front().actionNumber != 0)
+        cout << " on tile " << agentX + 1 << " " << agentY + 1 << endl;
 }
 
 // ======================================================================

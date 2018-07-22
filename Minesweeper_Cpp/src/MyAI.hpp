@@ -21,7 +21,9 @@
 #define MINE_SWEEPER_CPP_SHELL_MYAI_HPP
 
 #include "Agent.hpp"
-#include <iostream> // temporary use
+#include <iostream> // for debug
+#include <iomanip>  //
+#include <string>   //
 #include <vector>
 #include <map>
 #include <set>
@@ -66,6 +68,10 @@ private:
     	UNFLAG,
     };
 
+
+    //member variables
+    bool firstMove;
+
     vector<vector<Tile>> gameBoard;
 
     queue<Action> futureMoves;
@@ -74,11 +80,21 @@ private:
 
     vector<pair<int,int>> mineLocations;
 
+
+    //member functinos
 	void uncoverAllPossible(int x, int y);
 
 	void insertFutureMoves(pair<int,int> myPair, int actionNum);
 
     vector<pair<int,int>> getNeighborsCoordinates(int x, int y);
+
+
+    //debug functions
+    void  printMyWorldInfo(     );
+    void  printMyBoardInfo();
+    void printMyTileInfo( int c, int r );
+    void printMyActionInfo();
+
 
     // ======================================================================
     // YOUR CODE ENDS
