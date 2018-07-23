@@ -60,8 +60,7 @@ Agent::Action MyAI::getAction( int number )
                                                                                     
     updateGameBoard(number);
                                                                                 
-                                                                                            cout << agentX + 1 << agentY + 1 << number <<endl;
-    printMyWorldInfo(); 
+    //printMyWorldInfo(); 
 
     pair<int,int> myPair;
    
@@ -83,6 +82,8 @@ Agent::Action MyAI::getAction( int number )
 
         futureMoves.pop();
 
+        //gameBoard[agentX][agentY].uncovered = true;
+
         agentX = myAction.location.first;
         agentY = myAction.location.second;
 
@@ -93,31 +94,24 @@ Agent::Action MyAI::getAction( int number )
 
     //check for "1" tiles with one covered neighbor and flag as mine as well as insert mine location into mineLocations list
     
-                                                                                            cout<< "getAction  3"<<endl;
     for(int i=0; i<colDimension; i++)// X is col
     {
-                                                                                            cout<< "getAction  4"<<endl;
         for(int j =0; j<rowDimension; j++)// Y is row
         {
-                                                                                            cout<< "getAction  5"<<endl;
 
             int coverNei =0;
             vector<pair<int,int>> tempLocations;
             vector<pair<int,int>> temp;
-                                                                                            cout<< i << j <<endl;
             if (gameBoard[i][j].number > 0 )
             {
-                                                                                            cout<< "getAction  6"<<endl;
 
                 temp = getNeighborsCoordinates(i, j);
                 
                 for(int k = 0; k < temp.size(); k ++)
                 {
-                                                                                            cout<< "getAction  7"<<endl;
 
                     if (!gameBoard[temp[k].first][temp[k].second].uncovered )//thinking that all neighbor tiles are covered
                     {
-                                                                                            cout<< "getAction  8"<<endl;
 
                         myPair = make_pair(temp[k].first,temp[k].second);
                         tempLocations.push_back(myPair);
@@ -133,20 +127,14 @@ Agent::Action MyAI::getAction( int number )
             
             if (coverNei == gameBoard[i][j].number)
             {
-                                                                                            cout<< "getAction  9"<<endl;
-                                                                                            cout<< tempLocations.size()<< endl;
                 
                 for (int m =0; m<tempLocations.size();m++)//not entering this loop maybe temploactions.size = 0
                 {
-                                                                                            cout<< "getAction  10"<<endl;
 
                     myPair = tempLocations[m];
                     
                     if(previousMoves.count(myPair)!=1)
                     {
-                                                                                            cout<< "getAction  11"<<endl;
-
-                                                                                            cout<< "the location of mine is:"<<myPair.first+1<<myPair.second+1<<endl;
                         
                         insertFutureMoves(myPair,2);
                         
@@ -160,7 +148,6 @@ Agent::Action MyAI::getAction( int number )
         
     }
     //
-                                                                                                cout<< "getAction  12"<<endl;
 
     //scan for x-number tiles and check to see if x neighbors are flagged as a mine, if so, put all covered and unflagged neighbors into future moves
     for(int i = 0; i < colDimension; i++)
@@ -175,7 +162,6 @@ Agent::Action MyAI::getAction( int number )
     //if future moves is not empty, pop from it, change agent x and agent y, then return uncover action 
     if(!futureMoves.empty())
     {
-                                                                                                cout<< "getAction  13"<<endl;
 
         Action myAction = futureMoves.front();
 
@@ -235,7 +221,7 @@ void MyAI::uncoverAllPossible(int x, int y)
             flaggedCount ++;
     }
 
-    if(flaggedCount == gameBoard[x][y].number)
+    if(flaggedCount >= gameBoard[x][y].number)
     {
         for(int i = 0; i < temp.size(); i ++)
         {
@@ -311,17 +297,18 @@ void MyAI::updateGameBoard(int num)
     if(num > -1)
     {
         gameBoard[agentX][agentY].number = num;
-        gameBoard[agentX][agentY].uncovered == true;
+        gameBoard[agentX][agentY].uncovered = true;
+
     }
     if(num == -1)
     {
         gameBoard[agentX][agentY].number = num;
-        gameBoard[agentX][agentY].flag == true;
+        gameBoard[agentX][agentY].flag = true;
     }
 
 }
 
-//debug functions
+//debug functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void MyAI::printMyWorldInfo(     )
 {
     printMyBoardInfo();
