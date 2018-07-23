@@ -55,12 +55,13 @@ Agent::Action MyAI::getAction( int number )
 
 
     //temporary debug function DELETE BEFORE SUBMITION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    printMyWorldInfo(); 
+    
 
-                                                                                            cout<< "getAction  1"<<endl;
+                                                                                    
     updateGameBoard(number);
-                                                                                            cout<< "getAction  2"<<endl;
-
+                                                                                
+                                                                                            cout << agentX + 1 << agentY + 1 << number <<endl;
+    printMyWorldInfo(); 
 
     pair<int,int> myPair;
    
@@ -312,6 +313,11 @@ void MyAI::updateGameBoard(int num)
         gameBoard[agentX][agentY].number = num;
         gameBoard[agentX][agentY].uncovered == true;
     }
+    if(num == -1)
+    {
+        gameBoard[agentX][agentY].number = num;
+        gameBoard[agentX][agentY].flag == true;
+    }
 
 }
 
@@ -372,11 +378,11 @@ void MyAI::printMyActionInfo()
             break;
 
         default:
-            cout << "Last Action: Invalid" << endl;
+            cout << "next action: Invalid" << endl;
     }
 
     if (futureMoves.front().actionNumber != 0)
-        cout << " on tile " << agentX + 1 << " " << agentY + 1 << endl;
+        cout << " on tile " << futureMoves.front().location.first + 1 << " " << futureMoves.front().location.second + 1 << endl;
 }
 
 // ======================================================================
