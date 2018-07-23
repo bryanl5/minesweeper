@@ -78,8 +78,6 @@ private:
 
     set<pair<int,int>> previousMoves;  
 
-    vector<pair<int,int>> mineLocations;
-
 
     //member functinos
 	void uncoverAllPossible(int x, int y);
@@ -87,6 +85,8 @@ private:
 	void insertFutureMoves(pair<int,int> myPair, int actionNum);
 
     vector<pair<int,int>> getNeighborsCoordinates(int x, int y);
+
+    void updateGameBoard(int num);
 
 
     //debug functions

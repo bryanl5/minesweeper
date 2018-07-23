@@ -57,16 +57,11 @@ Agent::Action MyAI::getAction( int number )
     //temporary debug function DELETE BEFORE SUBMITION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     printMyWorldInfo(); 
 
+                                                                                            cout<< "getAction  1"<<endl;
+    updateGameBoard(number);
+                                                                                            cout<< "getAction  2"<<endl;
 
-    gameBoard[agentX][agentY].number = number;
 
-    if(firstMove == true)
-    {
-        gameBoard[agentX][agentY].uncovered = true;
-
-        firstMove = false;
-    }
-    
     pair<int,int> myPair;
    
     //if the tile number is 0 add its neighbors to futureMoves as long as they are inbounds
@@ -96,108 +91,75 @@ Agent::Action MyAI::getAction( int number )
     }
 
     //check for "1" tiles with one covered neighbor and flag as mine as well as insert mine location into mineLocations list
+    
+                                                                                            cout<< "getAction  3"<<endl;
     for(int i=0; i<colDimension; i++)// X is col
     {
-        int coverNei;
-        coverNei =0;
+                                                                                            cout<< "getAction  4"<<endl;
         for(int j =0; j<rowDimension; j++)// Y is row
         {
-            if (gameBoard[i][j].number==1)
+                                                                                            cout<< "getAction  5"<<endl;
+
+            int coverNei =0;
+            vector<pair<int,int>> tempLocations;
+            vector<pair<int,int>> temp;
+                                                                                            cout<< i << j <<endl;
+            if (gameBoard[i][j].number > 0 )
             {
-                if(  i- 1 >= 0 && j -1 >=0) //1
-                {
-                    if (!gameBoard[i-1][j-1].uncovered)
-                    {
-                        myPair = make_pair(i-1,j-1);
-                        coverNei++;
-                    }
-                }
-                if( i - 1 >= 0 && j + 1< rowDimension)
-                {
-                    if (!gameBoard[i-1][j+1].uncovered) //7
-                    {
-                        myPair = make_pair(i-1,j+1);
-                        coverNei++;
-                    }
+                                                                                            cout<< "getAction  6"<<endl;
 
-                }
-                if(i + 1 < colDimension && j - 1 >= 0)
+                temp = getNeighborsCoordinates(i, j);
+                
+                for(int k = 0; k < temp.size(); k ++)
                 {
-                    if (!gameBoard[i+1][j-1].uncovered)//3
-                    {
-                        myPair = make_pair(i+1,j-1);
-                        coverNei++;
-                    }
+                                                                                            cout<< "getAction  7"<<endl;
 
-                }
-                if( i + 1 < colDimension && j + 1< rowDimension)
-                {
-                    if (!gameBoard[i+1][j+1].uncovered) //9
+                    if (!gameBoard[temp[k].first][temp[k].second].uncovered )//thinking that all neighbor tiles are covered
                     {
-                        myPair = make_pair(i+1,j+1);
-                        coverNei++;
-                    }
+                                                                                            cout<< "getAction  8"<<endl;
 
-                }
-                if(j - 1 >= 0)
-                {
-                    if (!gameBoard[i][j-1].uncovered)//2
-                    {
-                         myPair = make_pair(i,j-1);
+                        myPair = make_pair(temp[k].first,temp[k].second);
+                        tempLocations.push_back(myPair);
+                        coverNei++;
                         
-                        coverNei++;
                     }
-
+                    
+                    
                 }
-                if(j + 1 < rowDimension)
-                {
-                    if (!gameBoard[i][j+1].uncovered) //8
-                    {
-                         myPair = make_pair(i,j+1);
-                        coverNei++;
-                    }
-
-                }
-                if(i - 1 >= 0)
-                {
-                    if (!gameBoard[i-1][j].uncovered)//4
-                    {
-                        myPair = make_pair(i-1,j);
-                        coverNei++;
-                    }
-
-                }
-                if(i + 1 < colDimension)
-                {
-                    if (!gameBoard[i+1][j].uncovered)//6
-                    {
-                        myPair = make_pair(i+1,j);
-                        coverNei++;
-                    }
-                }
+                
             }
             
-            if (coverNei ==1)
+            
+            if (coverNei == gameBoard[i][j].number)
             {
-                if(previousMoves.count(myPair)!=1)
+                                                                                            cout<< "getAction  9"<<endl;
+                                                                                            cout<< tempLocations.size()<< endl;
+                
+                for (int m =0; m<tempLocations.size();m++)//not entering this loop maybe temploactions.size = 0
                 {
-                    previousMoves.insert(myPair);
-                    mineLocations.push_back(myPair);
-                    gameBoard[agentX][agentY].flag = true;
-                    
-                    return {actions[2], myPair.first, myPair.second};
+                                                                                            cout<< "getAction  10"<<endl;
 
+                    myPair = tempLocations[m];
                     
+                    if(previousMoves.count(myPair)!=1)
+                    {
+                                                                                            cout<< "getAction  11"<<endl;
+
+                                                                                            cout<< "the location of mine is:"<<myPair.first+1<<myPair.second+1<<endl;
+                        
+                        insertFutureMoves(myPair,2);
+                        
+                    }
                 }
-
-             
+                
+                
             }
             
-                      
         }
         
     }
     //
+                                                                                                cout<< "getAction  12"<<endl;
 
     //scan for x-number tiles and check to see if x neighbors are flagged as a mine, if so, put all covered and unflagged neighbors into future moves
     for(int i = 0; i < colDimension; i++)
@@ -212,6 +174,8 @@ Agent::Action MyAI::getAction( int number )
     //if future moves is not empty, pop from it, change agent x and agent y, then return uncover action 
     if(!futureMoves.empty())
     {
+                                                                                                cout<< "getAction  13"<<endl;
+
         Action myAction = futureMoves.front();
 
         futureMoves.pop();
@@ -331,6 +295,26 @@ vector<pair<int,int>> MyAI::getNeighborsCoordinates(int x, int y)
     return neighborCoordinates;
 }
 
+void MyAI::updateGameBoard(int num)
+{
+
+    if(firstMove == true)
+    {
+        gameBoard[agentX][agentY].uncovered = true;
+
+        gameBoard[agentX][agentY].number = num;
+
+        firstMove = false;
+    }
+
+    if(num > -1)
+    {
+        gameBoard[agentX][agentY].number = num;
+        gameBoard[agentX][agentY].uncovered == true;
+    }
+
+}
+
 //debug functions
 void MyAI::printMyWorldInfo(     )
 {
@@ -339,7 +323,7 @@ void MyAI::printMyWorldInfo(     )
 }
 void MyAI::printMyBoardInfo(     )
 {
-    cout << "=================== Game Board ------------------\n" << endl;
+    cout << "=================== Container Game Board ------------------\n" << endl;
     for ( int r = rowDimension-1; r >= 0; --r )
     {
         printf("%-4d%c",r+1,'|');
