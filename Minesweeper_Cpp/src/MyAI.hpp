@@ -80,13 +80,29 @@ private:
 
 
     //member functinos
+
+    //this function checks to see if the number of flagged neighbors = the tiles number, 
+    //if so add all covered neighbors to future moves
 	void uncoverAllPossible(int x, int y);
 
+    //This function takes a pair and int ,
+    //adds an action to futureMoves if the pair of coordinates doesn't already exist in previousMoves
 	void insertFutureMoves(pair<int,int> myPair, int actionNum);
 
+    //this funciton returns a vector of pairs of coordinates of all in bounds neighbors of the given x,y
     vector<pair<int,int>> getNeighborsCoordinates(int x, int y);
 
+    //returns the number of flagged neighbors for a given tile coordinate
+    int flaggedNeighborsCount(int x, int y);
+
+    //this function updates the container game board based on the percept from the current getAction call
     void updateGameBoard(int num);
+
+    //helper functions that locate patterns and uncovers tiles based on patters
+    void find11();
+    void find12();
+
+
 
 
     //debug functions
